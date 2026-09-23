@@ -1,11 +1,10 @@
 const remoteMain = require('@electron/remote/main')
 remoteMain.initialize()
-const {app, ipcMain, BrowserWindow, dialog, powerSaveBlocker} = electron = require('electron')
+const {app, ipcMain, BrowserWindow, dialog, powerSaveBlocker, shell} = electron = require('electron')
 
 const fs = require('fs-extra')
 const path = require('path')
 const isDev = require('electron-is-dev')
-const trash = require('trash')
 const chokidar = require('chokidar')
 const os = require('os')
 const log = require('./shared/storyboarder-electron-log')
@@ -950,7 +949,7 @@ const createAndLoadScene = async aspectRatio => {
     if (fs.lstatSync(filePath).isDirectory()) {
       // ... try to trash it ...
       log.info('\ttrash existing folder', filePath)
-      await trash(filePath)
+      await shell.trashItem(filePath)
     } else {
       dialog.showMessageBox(null, {
         message: "Could not overwrite file " + path.basename(filePath) + ". Only folders can be overwritten."
@@ -1209,7 +1208,7 @@ let attemptLicenseVerification = async () => {
       })
       log.info('Removing invalid license key at', licenseKeyPath)
       prefModule.revokeLicense()
-      await trash(licenseKeyPath)
+      await shell.trashItem(licenseKeyPath)
     }
   } catch (err) {
     log.error(err)

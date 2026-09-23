@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const trash = require('trash')
+const { shell } = require('electron')
 
 const boardModel = require('../models/board')
 const util = require('../utils')
@@ -9,7 +9,7 @@ const zip = (a, b) => a.map((v, n) => [v, b[n]])
 
 const flatten = arr => Array.prototype.concat(...arr)
 
-const cleanupScene = (absolutePathToStoryboarderFile, trashFn = trash) => {
+const cleanupScene = (absolutePathToStoryboarderFile, trashFn = paths => Promise.all(paths.map(p => shell.trashItem(p)))) => {
   return new Promise((resolve, reject) => {
     let absolutePathToImagesFolder = path.resolve(path.join(path.dirname(absolutePathToStoryboarderFile), 'images'))
     let originalBoardData = JSON.parse(fs.readFileSync(absolutePathToStoryboarderFile))

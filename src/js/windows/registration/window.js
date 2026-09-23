@@ -1,12 +1,11 @@
 require('electron-redux/preload')
-const { ipcRenderer } = require('electron')
+const { ipcRenderer, shell } = require('electron')
 const { app } = remote = require('@electron/remote')
 const JWT = require('jsonwebtoken')
 const moment = require('moment')
 const { machineIdSync } = require('node-machine-id')
 const fs = require('fs')
 const path = require('path')
-const trash = require('trash')
 
 const configureStore = require('../src/js/shared/store/configureStore')
 const store = configureStore()
@@ -411,7 +410,7 @@ class HomeView {
     event.preventDefault()
     if (confirm('Are you sure you want to remove this license key from this machine?')) {
       // TODO should we ping the server?
-      await trash(licenseKeyPath)
+      await shell.trashItem(licenseKeyPath)
       alert('License removed. Please restart Storyboarder.')
       remote.getCurrentWindow().hide()
     }
